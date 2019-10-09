@@ -124,35 +124,23 @@ defmodule Plaid.Utils do
     Poison.Decode.decode(new_response, as: %Plaid.Item{})
   end
 
-  def map_response(%{"new_access_token" => _} = response, :item) do
-    response
-    |> atomify_response(["new_access_token", "request_id"])
-  end
+  def map_response(%{"new_access_token" => _} = response, :item),
+    do: atomify_response(response, ["new_access_token", "request_id"])
 
-  def map_response(%{"access_token" => _} = response, :item) do
-    response
-    |> atomify_response(["access_token", "item_id", "request_id"])
-  end
+  def map_response(%{"access_token" => _} = response, :item),
+    do: atomify_response(response, ["access_token", "item_id", "request_id"])
 
-  def map_response(%{"public_token" => _} = response, :item) do
-    response
-    |> atomify_response(["public_token", "expiration", "request_id"])
-  end
+  def map_response(%{"public_token" => _} = response, :item),
+    do: atomify_response(response, ["public_token", "expiration", "request_id"])
 
-  def map_response(%{"deleted" => _} = response, :item) do
-    response
-    |> atomify_response(["deleted", "request_id"])
-  end
+  def map_response(%{"deleted" => _} = response, :item),
+    do: atomify_response(response, ["deleted", "request_id"])
 
-  def map_response(%{"processor_token" => _} = response, :item) do
-    response
-    |> atomify_response(["processor_token", "request_id"])
-  end
+  def map_response(%{"processor_token" => _} = response, :item),
+    do: atomify_response(response, ["processor_token", "request_id"])
 
-  def map_response(%{"stripe_bank_account_token" => _} = response, :item) do
-    response
-    |> atomify_response(["stripe_bank_account_token", "request_id"])
-  end
+  def map_response(%{"stripe_bank_account_token" => _} = response, :item),
+    do: atomify_response(response, ["stripe_bank_account_token", "request_id"])
 
   def map_response(response, :"investments/holdings") do
     Poison.Decode.decode(response,
