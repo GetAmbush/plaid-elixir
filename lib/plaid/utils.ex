@@ -124,45 +124,23 @@ defmodule Plaid.Utils do
     Poison.Decode.decode(new_response, as: %Plaid.Item{})
   end
 
-  def map_response(%{"new_access_token" => _} = response, :item) do
-    response
-    |> Map.take(["new_access_token", "request_id"])
-    |> Enum.reduce(%{}, fn {k, v}, acc ->
-      Map.put(acc, String.to_atom(k), v)
-    end)
-  end
+  def map_response(%{"new_access_token" => _} = response, :item),
+    do: atomify_response(response, ["new_access_token", "request_id"])
 
-  def map_response(%{"access_token" => _} = response, :item) do
-    response
-    |> Map.take(["access_token", "item_id", "request_id"])
-    |> Enum.reduce(%{}, fn {k, v}, acc ->
-      Map.put(acc, String.to_atom(k), v)
-    end)
-  end
+  def map_response(%{"access_token" => _} = response, :item),
+    do: atomify_response(response, ["access_token", "item_id", "request_id"])
 
-  def map_response(%{"public_token" => _} = response, :item) do
-    response
-    |> Map.take(["public_token", "expiration", "request_id"])
-    |> Enum.reduce(%{}, fn {k, v}, acc ->
-      Map.put(acc, String.to_atom(k), v)
-    end)
-  end
+  def map_response(%{"public_token" => _} = response, :item),
+    do: atomify_response(response, ["public_token", "expiration", "request_id"])
 
-  def map_response(%{"deleted" => _} = response, :item) do
-    response
-    |> Map.take(["deleted", "request_id"])
-    |> Enum.reduce(%{}, fn {k, v}, acc ->
-      Map.put(acc, String.to_atom(k), v)
-    end)
-  end
+  def map_response(%{"deleted" => _} = response, :item),
+    do: atomify_response(response, ["deleted", "request_id"])
 
-  def map_response(%{"processor_token" => _} = response, :item) do
-    response
-    |> Map.take(["processor_token", "request_id"])
-    |> Enum.reduce(%{}, fn {k, v}, acc ->
-      Map.put(acc, String.to_atom(k), v)
-    end)
-  end
+  def map_response(%{"processor_token" => _} = response, :item),
+    do: atomify_response(response, ["processor_token", "request_id"])
+
+  def map_response(%{"stripe_bank_account_token" => _} = response, :item),
+    do: atomify_response(response, ["stripe_bank_account_token", "request_id"])
 
   def map_response(response, :"investments/holdings") do
     Poison.Decode.decode(response,
@@ -192,5 +170,13 @@ defmodule Plaid.Utils do
         item: %Plaid.Item{}
       }
     )
+  end
+
+  defp atomify_response(response, args) do
+    response
+    |> Map.take(args)
+    |> Enum.reduce(%{}, fn {k, v}, acc ->
+      Map.put(acc, String.to_atom(k), v)
+    end)
   end
 end
