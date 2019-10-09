@@ -171,7 +171,7 @@ defmodule Plaid.Item do
   end
 
   @doc """
-  [Creates a processor token](https://developers.dwolla.com/resources/dwolla-plaid-integration.html)
+  [Creates a Dwolla token](https://developers.dwolla.com/resources/dwolla-plaid-integration.html)
   used to create an authenticated funding source with Dwolla.
 
   Parameters
@@ -184,10 +184,33 @@ defmodule Plaid.Item do
   {:ok, %{processor_token: "some-token", request_id: "k522f2"}}
   ```
   """
-  @spec create_processor_token(params, config | nil) :: {:ok, map} | {:error, Plaid.Error.t()}
-  def create_processor_token(params, config \\ %{}) do
+  @spec create_dwolla_token(params, config | nil) :: {:ok, map} | {:error, Plaid.Error.t()}
+  def create_dwolla_token(params, config \\ %{}) do
     config = validate_cred(config)
     endpoint = "processor/dwolla/processor_token/create"
+
+    make_request_with_cred(:post, endpoint, config, params)
+    |> Utils.handle_resp(@endpoint)
+  end
+
+  @doc """
+  [Creates a Stripe token](https://stripe.com/docs/ach)
+  used to create an authenticated funding source with Stripe.
+
+  Parameters
+  ```
+  %{access_token: "access-env-identifier", account_id: "plaid-account-id"}
+  ```
+
+  Response
+  ```
+  {:ok, %{stripe_bank_account_token: "some-token", request_id: "k522f2"}}
+  ```
+  """
+  @spec create_stripe_token(params, config | nil) :: {:ok, map} | {:error, Plaid.Error.t()}
+  def create_stripe_token(params, config \\ %{}) do
+    config = validate_cred(config)
+    endpoint = "processor/stripe/bank_account_token/create"
 
     make_request_with_cred(:post, endpoint, config, params)
     |> Utils.handle_resp(@endpoint)
